@@ -33,9 +33,9 @@ pub fn thread_spawner() -> Arc<Mutex<Vec<(String, String)>>> {
 			let mut res = res_clone.lock().unwrap();
 
 			// для ускорения обработки при маленьких запросах уменьшаем выборку
-			let range = if zeros.len() < 6 || *lines < 12 {
+			let range = if zeros.len() < 6 && *lines < 12 {
 				1_000_000
-			} else if zeros.len() < 7 || *lines < 6 {
+			} else if zeros.len() < 7 && *lines < 7 {
 				10_000_000
 			// при необходимости увеличить верхний порог
 			} else {
@@ -45,7 +45,6 @@ pub fn thread_spawner() -> Arc<Mutex<Vec<(String, String)>>> {
 			// разбиваем диапазон по 1_000_000 на ядро
 			let min = if i == 1 { 1 } else { (i - 1) * range + 1 };
 			let max = if i == 1 { i + range - 1 } else { i * range };
-			println!("Thread {:?} started with {:?}-{:?}", i, min, max);
 
 			for j in min..=max {
 				// выходим из цикла если нашлось нужное кол-во записей
